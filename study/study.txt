@@ -1,0 +1,197 @@
+eslint和prettier的配置
+    https://blog.csdn.net/qq_43209807/article/details/127162019
+两种预渲染模式(数据和html都拼接好了,直接返回给浏览器)
+    1. 静态生成 - npm run build的时候,就把页面全部生成了(推荐!!!!!!!!!) 适用于数据不会频繁更新的场景
+        无数据(next默认的, pages下的文件在build后,就会生成一个一个的html了)
+        有数据(组件依赖外部数据)
+            build的时候,会发请求去获取数据
+        动态路由
+
+    2. 服务器渲染 - 用户请求路径后,服务器端才把数据和html进行拼接,然后再返回给浏览器 - 页面内容随请求变化而变化的页面
+
+TS交叉类型: 先删掉所有带问号的,然后将剩下的所有的混合在一起并去重
+TS联合类型: 符合一个即可, 多一个其他的也行
+
+
+
+prisma:
+    npm i prisma -D
+    npx prisma init (初始化prisma的基本文件结构, 如.env的生成等 - 建议在项目根目录中执行)
+    在schema.prisma中编写表模型，编辑完成后映射到数据库，执行 npx prisma db push
+    再执行 npx prisma generate
+        import { PrismaClient } from '@prisma/client'
+        const prisma = new PrismaClient()
+
+    // 执行 npx prisma migrate dev --name init
+
+
+
+
+
+
+
+
+
+const Koa = require('koa')
+const Router = require('@koa/router')
+const static1 = require('koa-static');
+const {PrismaClient} = require('@prisma/client')
+
+const prisma = new PrismaClient()
+const app = new Koa();
+// app.use(ctx=>{
+//   const {req, res, path} = ctx;
+//   console.log(path)
+//   // response.end("22222");
+//   res.end("203")
+//   // ctx.body = 'hello2';
+// });
+
+
+// 实现静态资源管理
+app.use(static1('./public'))
+
+const router = new Router();
+
+/**
+ * 查
+ */
+router.get('/a', async ctx => {
+  // await prisma.user.add
+  const data = await prisma.user.findMany();
+  ctx.body = {msg: data}
+})
+
+/**
+ * 增
+ */
+router.get('/add', async ctx => {
+  // await prisma.user.add
+  const user = {
+    name: "Mike1",
+    email: "1232@qq.com",
+    password: "wwwww"
+  }
+  await prisma.user.create({
+    data: user
+  })
+  ctx.body = {msg: 'add success!'}
+})
+
+// 将id为1的文章关联到id为2的user上 ！！！！！！！！！！
+router.get('/add-post', async ctx => {
+  await prisma.post.update({
+    where: {id: 1},
+    data: {
+      author: {
+        connect: {id: 2}
+      }
+    }
+  })
+  ctx.body = {msg: 'post success!'}
+})
+
+// 查询用户的同时把文章也查询出来
+router.get('/get-user', async ctx => {
+  const result = await prisma.user.findUnique({
+    where: {
+      id: 2
+    },
+    include: {
+      post: true
+    }
+  })
+  ctx.body = {msg: result}
+})
+
+// 查询用户的同时屏蔽除id和name以外的其他字段
+router.get('/get-user-no-email', async ctx => {
+  const result = await prisma.user.findMany({
+    select :{
+      id: true,
+      name: true
+    }
+  })
+  ctx.body = {msg: result}
+})
+
+// 创建用户的同时创建一片文章
+router.get('/create-user-with-post', async ctx => {
+  await prisma.user.create({
+    data: {
+      name: "halipote",
+      email: "123@11.com",
+      post:{
+        create:{
+          title: '我随之而来的一片文章',
+          content: "asdasdasdasdasd"
+        }
+      }
+    }
+  })
+  ctx.body = {msg: 'success~~'}
+})
+
+// 过滤查询
+router.get('/filter', async ctx => {
+  const result = await prisma.user.findMany({
+    where:{
+      name: {
+        startsWith: 'K'
+      }
+    }
+  })
+  ctx.body = {msg: result}
+})
+
+// 分页查询
+router.get('/page', async ctx => {
+  const result = await prisma.user.findMany({
+    skip: 0,// 从skip+1查起
+    take: 3, // 查2条
+  })
+  ctx.body = {msg: result}
+})
+
+// 查询id=2的用户下 已发布的文章
+router.get('/unPublish', async ctx => {
+  const result = await prisma.user.findUnique({
+    where:{
+      id: 2
+    }
+  }).post({
+    where:{
+      published: true
+    }
+  })
+  ctx.body = {msg: result}
+})
+
+/**
+ * 改
+ */
+router.get('/update', async ctx => {
+  await prisma.user.update({
+    where: {
+      id: 2,
+    },
+    data: {
+      name: "Kite",
+    }
+  })
+  ctx.body = {msg: 'update success'};
+})
+
+router.get('/a/:id', ctx => {
+  ctx.body = {msg: ctx.params}
+})
+router.post('/a', ctx => {
+  ctx.body = {msg: 'ok-post'}
+})
+app
+  .use(router.routes())
+  .use(router.allowedMethods())
+
+// 静态资源托管： yarn add koa-static
+
+app.listen(2399, () => console.log("服务启动了！！！"));

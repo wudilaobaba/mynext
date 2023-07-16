@@ -1,0 +1,28 @@
+postgreql学习
+    mac安装数据库软件：https://postgresapp.com/downloads.html
+    安装后，在上面软件中点击start后，再点击进入数据库，命令行工具会出现这条命令：
+    /Applications/Postgres.app/Contents/Versions/15/bin/psql -p7927 "postgres"
+    说明是在执行该app下的psql命令
+    所以，可以️再环境变量配置文件~/.zshrc中进行配置：
+        export PATH="/Applications/Postgres.app/Contents/Versions/15/bin:$PATH"
+        然后运行: psql -p7927 "数据库名有引号" 就可以进到数据库中进行命令行操作了
+
+    一个完整的登陆并进入数据库的命令如下：
+    psql -U 用户名无引号 -d 数据库名无引号 -h 域名无引号 -p 端口号无引号
+    \h CREATE DATABASE 查看某个命令的具体使用方法
+    \q 退出当前数据库
+    \c 数据库名无引号   切换数据库
+    \d 表名无引号       查看表结构
+    \du 查询当前所有用户
+    创建数据库：
+        create database 数据库名无引号
+    删除数据库：
+        drop database 数据库名无引号
+    创建表
+        create table test(id serial primary key, name varchar(255));
+    插入数据
+        insert into test(name) values('Tom');
+    创建用户
+        create user user1 with password '654321'
+    删除用户
+        drop user user1
