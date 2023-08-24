@@ -1,5 +1,9 @@
 import { useStore } from "@/utils/useStore";
 import { trpc } from "@/utils";
+import { CreateUser } from "./CreateUser";
+import { CreateEmployees } from "./CreateEmployees";
+import { CreateDepartment } from "./CreateDeparment";
+import {useEffect} from 'react'
 export const Container = () => {
   const { data: store, dispatch } = useStore().trpc;
   const { name, password } = store;
@@ -10,8 +14,13 @@ export const Container = () => {
   /** useMutation 定义的时候不传参， 使用的时候要根据router定义的参数类型进行传递参数 */
   const { data: d, mutate } = trpc.router1.post1.useMutation();
   const { data } = trpc.memberRouter.xxx.useQuery();
-  const { mutate: dropUser } = trpc.memberRouter.deleteUser.useMutation();
+  const { mutate: dropUser, data: delResult } = trpc.memberRouter.deleteUser.useMutation();
 
+  useEffect(()=>{
+    if(delResult){
+        console.log(2222)
+    }
+  },[delResult])
   // const { data: user } = trpc.memberRouter.user.useQuery({
   //   name,
   //   password,
@@ -45,11 +54,14 @@ export const Container = () => {
     await fetchNextPage();
   };
 
-  const del = async () => {
-    await dropUser({ id: 1 });
+  const del = () => {
+    dropUser({ id: 1 });
   };
   return (
     <div>
+      <CreateUser />
+      <CreateEmployees />
+      <CreateDepartment />
       {/*<button onClick={() => mutate({ text: "22" })}>TRPC</button>*/}
       {/*<h1>{d?.status}</h1>*/}
       <button onClick={del}>删除</button>

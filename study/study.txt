@@ -16,13 +16,25 @@ TS联合类型: 符合一个即可, 多一个其他的也行
 
 prisma:
     npm i prisma -D
-    npx prisma init (初始化prisma的基本文件结构, 如.env的生成等 - 建议在项目根目录中执行)
-    在schema.prisma中编写表模型，编辑完成后映射到数据库，执行 npx prisma db push
-    再执行 npx prisma generate
-        import { PrismaClient } from '@prisma/client'
-        const prisma = new PrismaClient()
+    npx prisma init
+        用于：初始化prisma的基本文件结构, 如.env的生成等 - 建议在项目根目录中执行（一次性命令）
+    npx prisma db push (一般执行后要再执行一下 npx prisma generate)
+        用于：schema.prisma中增加/删除表
+             已有的表增加新字段后，执行后会清空该表
+       如果出现prisma点不出来表名，则需要手动删除一下/prisma/migrations目录，再执行：npx prisma migrate dev --name init
+    npx prisma migrate dev --name init
+        用户切换数据库后执行
 
-    // 执行 npx prisma migrate dev --name init
+
+        npx prisma generate
+        npx prisma db push 或
+        npx prisma migrate dev --name <migration-name>
+
+        修改schema.prisma的经验总结：
+            改字段: 如果该字段是一个必选项，则必须加上默认值 @default("男")
+
+
+
 
 
 

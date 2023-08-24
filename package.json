@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@next/eslint-plugin-next": "^13.4.12",
     "@tanstack/react-query": "^4.29.19",
     "@trpc/client": "^10.33.0",
     "@trpc/next": "^10.33.0",
@@ -19,6 +20,7 @@
     "@types/react-dom": "18.2.6",
     "eslint": "8.43.0",
     "eslint-config-next": "13.4.7",
+    "immer": "^10.0.2",
     "next": "13.4.7",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -28,6 +30,7 @@
   "devDependencies": {
     "@prisma/client": "^4.16.2",
     "eslint-config-prettier": "8.8.0",
+    "eslint-plugin-next": "^0.0.0",
     "eslint-plugin-prettier": "^4.2.1",
     "prettier": "2.8.8"
   }

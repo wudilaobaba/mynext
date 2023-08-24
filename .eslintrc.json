@@ -1,5 +1,5 @@
 {
-  "extends": ["next/core-web-vitals", "eslint:recommended"],
+  "extends": ["next/core-web-vitals","next"],
   "plugins": ["prettier"],
   "rules": {
     "prettier/prettier": "error",
@@ -7,3 +7,5 @@
     "prefer-arrow-callback": "off"
   }
 }
+
+

@@ -1,9 +1,15 @@
 import { router, procedure } from "../trpc";
 import { router1 } from "./router1";
-import { memberRouter } from "./memberRouter";
+import {userRouter} from "@/server/routers/user.router";
+import {empRouter} from "@/server/routers/emp.router";
+import {departmentRouter} from "@/server/routers/department.router";
+import {locationRouter} from "@/server/routers/location.router";
 export const appRouter = router({
   router1,
-  memberRouter,
+  userRouter,
+  empRouter,
+  departmentRouter,
+  locationRouter,
   // 以下作为学习使用
   sayHi: procedure.query(async (a) => {
     console.log("a:", a);

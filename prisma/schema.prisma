@@ -9,11 +9,61 @@ datasource db {
 
 model User {
   id         Int       @id @default(autoincrement())
-  name       String?   @unique
-  email      String?   @unique
-  password   String
+  name       String    @unique
+  facebook   String?
+  hobby      String?
+  age        Int?
   createTime DateTime? @default(now()) @map("create_time")
   updateTime DateTime? @updatedAt @map("update_time")
 
   @@map("user")
+}
+
+model Location {
+  id             Int          @id @default(autoincrement())
+  street_address String
+  postal_code    String
+  city           String
+  state_province String
+  country_id     Int
+  department     Department[] @relation("D_L")
+
+  @@map("location")
+}
+
+model Employees {
+  id             Int         @id @default(autoincrement())
+  first_name     String      @unique
+  last_name      String
+  email          String?     @unique
+  phone_number   String?
+  job_id         String      @unique
+  salary         Float
+  manager_id     Int?
+  department_id  Int?
+  commission_pct String
+  department     Department? @relation("e_d", fields: [department_id], references: [id])
+
+  @@map("employees")
+}
+
+model Manager {
+  id         Int         @id @default(autoincrement())
+  name       String
+  department Department? @relation("MD")
+
+  @@map("manager")
+}
+
+model Department {
+  id              Int         @id @default(autoincrement())
+  department_name String
+  manager_id      Int         @unique
+  location_id     Int
+  country_id      Int
+  employees       Employees[] @relation("e_d")
+  manager         Manager     @relation("MD", fields: [manager_id], references: [id])
+  location        Location    @relation("D_L", fields: [location_id], references: [id])
+
+  @@map("department")
 }

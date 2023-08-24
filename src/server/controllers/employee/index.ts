@@ -1,0 +1,5 @@
+export {createManyEmpController} from './createManyEmp.controller'
+export {getEmpController} from './getEmp.controller'
+export {createEmpController} from './createEmp.controller'
+export {empListController} from './empList.controller'
+export {empListInfiniteController} from './empListInfinite.controller'
